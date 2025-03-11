@@ -4,7 +4,7 @@ import Link from "next/link";
 const Sidebar = () => {
   return (
     <div className="bg-gray-800 text-white w-64 min-h-screen p-4">
-      <div className="text-2xl font-bold mb-6">Admin Panel</div>
+      <div className="text-2xl font-bold mb-6">NCAI-Admin-Portal</div>
       <nav>
         <ul className="space-y-2">
           <li>
@@ -25,7 +25,7 @@ const Sidebar = () => {
           </li>
           <li>
             <Link
-              href="/students"
+              href="../pages/student"  
               className="block py-2 px-4 rounded hover:bg-gray-700 transition duration-200"
             >
               Students
@@ -45,6 +45,14 @@ const Sidebar = () => {
               className="block py-2 px-4 rounded hover:bg-gray-700 transition duration-200"
             >
               Settings
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/settings"
+              className="block py-2 px-4 rounded hover:bg-gray-700 transition duration-200"
+            >
+              Certification
             </Link>
           </li>
         </ul>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
+// import Logo from "../../public/logo.png";
 
 export default function InternshipPortal() {
   const [step, setStep] = useState(1);
@@ -220,28 +221,15 @@ export default function InternshipPortal() {
       <div className="relative z-10 flex justify-center items-center min-h-screen">
         <div className="w-full max-w-4xl bg-gray-800 bg-opacity-90 backdrop-blur-lg p-8 rounded-xl shadow-2xl mx-4 my-8">
         <div className="flex justify-between  content-center">
-            <div className=" w-20 bg-gray-700 rounded-lg flex items-center justify-center text-sm">
-              Your 
-            </div><h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+            <div className=" w-20 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-sm mb-8">
+            <Image width={200} height={200} src={"/ncailogo.png"} alt="Profile Preview"  className="rounded-2xl"/>
+            </div>
+            <h1 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
             NCAI INTERNSHIP PORTAL
           </h1>
           </div>
           
 
-          <div className="flex justify-center mb-8">
-            {[1, 2, 3].map(num => (
-              <div key={num} className="mx-2">
-                <button 
-                  onClick={() => setStep(num)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center 
-                    ${step === num ? "bg-blue-500 text-white" : "bg-gray-700"} 
-                    ${step > num ? "bg-green-500" : ""}`}
-                >
-                  {num}
-                </button>
-              </div>
-            ))}
-          </div>
 
           <div className="space-y-6">
             {step === 1 && (
@@ -393,32 +381,53 @@ export default function InternshipPortal() {
            </div>
             )}
 
-            <div className="flex justify-between mt-8">
-              {step > 1 && (
-                <button 
-                  onClick={() => setStep(prev => prev - 1)}
-                  className="px-6 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition"
-                >
-                  Back
-                </button>
-              )}
-              <div className="flex-1" />
-              {step < 3 ? (
-                <button
-                  onClick={handleNext}
-                  className="px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-500 transition"
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  className="px-6 py-2 bg-green-600 rounded-lg hover:bg-green-500 transition"
-                >
-                  Submit Application
-                </button>
-              )}
-            </div>
+<div className="flex items-center justify-between w-full mt-8 space-x-4">
+  {/* Back Button */}
+  {step > 1 ? (
+    <button 
+      onClick={() => setStep(prev => prev - 1)}
+      className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition"
+    >
+      Back
+    </button>
+  ) : (
+    <div className="w-24" />  // Placeholder to keep layout balanced
+  )}
+
+  {/* Step Indicators */}
+  <div className="flex space-x-3">
+    {[1, 2, 3].map(num => (
+      <button
+        key={num}
+        onClick={() => setStep(num)}
+        className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold transition
+          ${step === num ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-300"}
+          ${step > num ? "bg-green-500 text-white" : ""}`}
+      >
+        {num}
+      </button>
+    ))}
+  </div>
+
+  {/* Next / Submit Button */}
+  {step < 3 ? (
+    <button
+      onClick={handleNext}
+      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition"
+    >
+      Next
+    </button>
+  ) : (
+    <button
+      onClick={handleSubmit}
+      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition"
+    >
+      Submit Application
+    </button>
+  )}
+</div>
+
+
           </div>
         </div>
       </div>
