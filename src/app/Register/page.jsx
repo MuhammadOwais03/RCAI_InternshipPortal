@@ -199,7 +199,7 @@ export default function InternshipPortal() {
     setStep(prev => Math.min(prev + 1, 3));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value instanceof File) {
@@ -208,10 +208,21 @@ export default function InternshipPortal() {
         data.append(key, value);
       }
     });
-    
-    console.log("Form Data:", Object.fromEntries(data));
-    localStorage.setItem("internshipData", JSON.stringify(formData));
-    alert("Application Submitted Successfully!");
+  
+    try {
+      const response = await fetch('/api/save-intern', {
+        method: 'POST',
+        body: data,
+      });
+  
+      if (!response.ok) throw new Error('Submission failed');
+      
+      const result = await response.json();
+      alert(result.message || "Application Submitted Successfully!");
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert("Error submitting application");
+    }
   };
 
   return (
@@ -249,12 +260,7 @@ export default function InternshipPortal() {
                   className="w-full p-3 bg-gray-700 rounded-lg"
                   onChange={handleChange}
                 />
-                <input
-                  type="date"
-                  name="dob"
-                  className="w-full p-3 bg-gray-700 rounded-lg"
-                  onChange={handleChange}
-                />
+               
                 <div>
                   <input
                     name="phone"
@@ -299,7 +305,7 @@ export default function InternshipPortal() {
                   {errors.university && <span className="text-red-400 text-sm">{errors.university}</span>}
                 </div>
                 <input
-                  type="text"
+                  type="date"
                   name="period"
                   placeholder="Internship Period (e.g., 3 months)"
                   className="w-full p-3 bg-gray-700 rounded-lg"
@@ -334,12 +340,7 @@ export default function InternshipPortal() {
                   className="w-full p-3 bg-gray-700 rounded-lg"
                   onChange={handleChange}
                 />
-                <input
-                  name="emergencyContact"
-                  placeholder="Emergency Contact Number"
-                  className="w-full p-3 bg-gray-700 rounded-lg"
-                  onChange={handleChange}
-                />
+               
               </div>
             )}
 

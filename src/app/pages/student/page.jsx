@@ -1,119 +1,203 @@
-"use client"
-import { useState } from "react";
-import { FaStar, FaEdit, FaTrash, FaCertificate, FaTasks } from "react-icons/fa";
+"use client";
+import { useState, useEffect } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 
 export default function StudentList() {
-  const [students, setStudents] = useState([
-    { id: 1, name: "Ali Khan", progress: 75, projects: 3, rating: 4 },
-    { id: 2, name: "Sara Ahmed", progress: 45, projects: 2, rating: 3 },
-    { id: 3, name: "Usman Malik", progress: 90, projects: 5, rating: 5 },
-  ]);
-
+  const [interns, setInterns] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedIntern, setSelectedIntern] = useState(null);
 
-  const handleDelete = (id) => {
-    setStudents(students.filter(student => student.id !== id));
+  useEffect(() => {
+    fetchInterns();
+  }, []);
+
+  const fetchInterns = async () => {
+    try {
+      const response = await fetch('/api/interns-data1');
+      const data = await response.json();
+      setInterns(data);
+    } catch (error) {
+      console.error('Error fetching interns:', error);
+    }
   };
 
-  const handleEdit = (student) => {
-    setSelectedStudent(student);
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/interns-data/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setInterns(interns.filter(intern => intern.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting intern:', error);
+    }
+  };
+
+  const handleEdit = (intern) => {
+    setSelectedIntern(intern);
     setShowEditModal(true);
   };
 
-  const updateStudent = (updatedData) => {
-    setStudents(students.map(student => 
-      student.id === updatedData.id ? { ...student, ...updatedData } : student
-    ));
-    setShowEditModal(false);
+  const updateIntern = async (updatedData) => {
+    try {
+      const response = await fetch(`/api/interns-data/${updatedData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      });
+      if (response.ok) {
+        fetchInterns();
+        setShowEditModal(false);
+      }
+    } catch (error) {
+      console.error('Error updating intern:', error);
+    }
   };
+  const handleAssignProject = async (intern) => {
+    const assignedProject = prompt("Enter project name:");
+    if (!assignedProject) return;
+  
+    try {
+      const response = await fetch(`/api/interns-data`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: intern.id, assignedProject, progress: 0 }),
+      });
+  
+      if (response.ok) {
+        fetchInterns(); // ✅ Refresh the table
+      } else {
+        console.error("Failed to update project.");
+      }
+    } catch (error) {
+      console.error("Error assigning project:", error);
+    }
+  };
+  const updateProgress = async (id, progress) => {
+    try {
+      const response = await fetch(`/api/interns-data`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, progress }),
+      });
+  
+      if (response.ok) {
+        setInterns((prevInterns) =>
+          prevInterns.map((intern) =>
+            intern.id === id ? { ...intern, progress } : intern
+          )
+        );
+      } else {
+        console.error("Failed to update progress.");
+      }
+    } catch (error) {
+      console.error("Error updating progress:", error);
+    }
+  };
+  
+  
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <Sidebar />
       <div className="flex-1">
         <Navbar />
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold text-gray-900">Manage Interns</h1>
-          </div>
-        </header>
+       
 
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-800">Internship Candidates</h2>
-              <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-                Add New Intern
-              </button>
-            </div>
+        <main className="w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white rounded-xl shadow-xl overflow-hidden w-full">
+        {/* Header Section */}
+        <div className="w-full p-4 border-b border-gray-300 flex justify-between items-center bg-gray-700 text-white">
+          <h2 className="text-2xl font-semibold">Internship Candidates</h2>
+          <button className="bg-white text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition flex items-center gap-2">
+            Add New Intern
+          </button>
+        </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Progress</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Projects</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rating</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {students.map(student => (
-                    <tr key={student.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="w-32 h-2 bg-gray-200 rounded-full">
-                          <div 
-                            className="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-500"
-                            style={{ width: `${student.progress}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm text-gray-600">{student.progress}%</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
-                          {student.projects}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <FaStar 
-                              key={i}
-                              className={i < student.rating ? "text-yellow-400" : "text-gray-300"}
-                            />
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap space-x-2">
-                        <button 
-                          onClick={() => handleEdit(student)}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          <FaEdit className="inline-block" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(student.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <FaTrash className="inline-block" />
-                        </button>
-                        
-                        <button className="text-purple-600 hover:text-purple-900">
-                          <FaTasks className="inline-block" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </main>
+        {/* Table Section */}
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-gray-200 text-gray-700 uppercase text-sm">
+              <tr className="border-b border-gray-300">
+                <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">University</th>
+                <th className="px-4 py-3">Department</th>
+                <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Domain</th>
+                <th className="px-4 py-3">Progress</th>
+                <th className="px-4 py-3">Update Progress</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white text-gray-700">
+              {interns.map((intern, index) => (
+                <tr key={intern.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-4 text-center">{index + 1}</td>
+                  <td className="px-4 py-4">{intern.firstName} {intern.lastName}</td>
+                  <td className="px-4 py-4">{intern.email}</td>
+                  <td className="px-4 py-4">{intern.university}</td>
+                  <td className="px-4 py-4">{intern.department}</td>
+                  <td className="px-4 py-4">{intern.phone}</td>
+                  <td className="px-4 py-4">{intern.domain}</td>
+
+                  {/* Progress Bar */}
+                  <td className="px-4 py-4">
+                    <div className="relative w-32 h-4 bg-gray-300 rounded">
+                      <div
+                        className="absolute top-0 left-0 h-4 bg-green-500 rounded transition-all"
+                        style={{ width: `${intern.progress || 0}%` }}
+                      />
+                    </div>
+                    <span className="text-sm">{intern.progress || 0}%</span>
+                  </td>
+
+                  {/* Progress Dropdown */}
+                  <td className="px-4 py-4">
+                    <select
+                      value={intern.progress || 0}
+                      onChange={(e) => updateProgress(intern.id, parseInt(e.target.value))}
+                      className="border rounded p-1 bg-white shadow"
+                    >
+                      <option value="0">Not Started</option>
+                      <option value="25">25%</option>
+                      <option value="50">50%</option>
+                      <option value="75">75%</option>
+                      <option value="100">Completed</option>
+                    </select>
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-4 flex space-x-2">
+                    <button 
+                      onClick={() => handleEdit(intern)}
+                      className="text-green-600 hover:text-green-800 text-lg"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(intern.id)}
+                      className="text-red-600 hover:text-red-800 text-lg"
+                    >
+                      <FaTrash />
+                    </button>
+                    <button
+                      onClick={() => handleAssignProject(intern)}
+                      className="bg-gray-700 text-white px-3 py-1 rounded-md hover:bg-gray-800 transition text-sm"
+                    >
+                      Assign Project
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
 
         {showEditModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -121,19 +205,25 @@ export default function StudentList() {
               <h3 className="text-xl font-bold mb-4">Edit Intern Details</h3>
               <input
                 type="text"
-                value={selectedStudent.name}
-                onChange={(e) => setSelectedStudent({...selectedStudent, name: e.target.value})}
+                placeholder="First Name"
+                value={selectedIntern.firstName}
+                onChange={(e) => setSelectedIntern({...selectedIntern, firstName: e.target.value})}
                 className="w-full mb-4 p-2 border rounded"
               />
-              <div className="mb-4">
-                <label className="block mb-2">Progress (%)</label>
-                <input
-                  type="number"
-                  value={selectedStudent.progress}
-                  onChange={(e) => setSelectedStudent({...selectedStudent, progress: e.target.value})}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Last Name"
+                value={selectedIntern.lastName}
+                onChange={(e) => setSelectedIntern({...selectedIntern, lastName: e.target.value})}
+                className="w-full mb-4 p-2 border rounded"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={selectedIntern.email}
+                onChange={(e) => setSelectedIntern({...selectedIntern, email: e.target.value})}
+                className="w-full mb-4 p-2 border rounded"
+              />
               <div className="flex justify-end space-x-3">
                 <button 
                   onClick={() => setShowEditModal(false)}
@@ -142,7 +232,7 @@ export default function StudentList() {
                   Cancel
                 </button>
                 <button 
-                  onClick={() => updateStudent(selectedStudent)}
+                  onClick={() => updateIntern(selectedIntern)}
                   className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                 >
                   Save Changes
