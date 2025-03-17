@@ -200,28 +200,46 @@ export default function InternshipPortal() {
   };
 
   const handleSubmit = async () => {
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value instanceof File) {
-        data.append(key, value, value.name);
-      } else {
-        data.append(key, value);
-      }
-    });
-  
     try {
-      const response = await fetch('/api/save-intern', {
+      // Convert form data to FormData
+      const data = new FormData();
+      
+      // Append all fields
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value instanceof File) {
+          data.append(key, value, value.name);
+        } else if (value !== null && value !== undefined) {
+          data.append(key, value);
+        }
+      });
+  
+      // Submit to backend
+      const response = await fetch('http://localhost:5000/api/save-intern', {
         method: 'POST',
         body: data,
       });
   
-      if (!response.ok) throw new Error('Submission failed');
-      
       const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.message || 'Submission failed');
+      }
+  
       alert(result.message || "Application Submitted Successfully!");
+      
+      // Reset form after successful submission
+      setFormData({
+        firstName: "",
+        lastName: "",
+        // ... reset all other fields
+      });
+      setStep(1);
+      setPreviewImage("");
+      setResumeText("");
+  
     } catch (error) {
       console.error('Submission error:', error);
-      alert("Error submitting application");
+      alert(error.message || "Error submitting application");
     }
   };
 

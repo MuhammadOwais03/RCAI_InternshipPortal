@@ -15,7 +15,7 @@ export default function StudentList() {
 
   const fetchInterns = async () => {
     try {
-      const response = await fetch('/api/interns-data1');
+      const response = await fetch('http://localhost:5000/api/interns-data');
       const data = await response.json();
       setInterns(data);
     } catch (error) {
@@ -23,16 +23,16 @@ export default function StudentList() {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`/api/interns-data/${id}`, { method: 'DELETE' });
-      if (response.ok) {
-        setInterns(interns.filter(intern => intern.id !== id));
-      }
-    } catch (error) {
-      console.error('Error deleting intern:', error);
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const response = await fetch(`/api/interns-data/${id}`, { method: 'DELETE' });
+  //     if (response.ok) {
+  //       setInterns(interns.filter(intern => intern.id !== id));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting intern:', error);
+  //   }
+  // };
 
   const handleEdit = (intern) => {
     setSelectedIntern(intern);
@@ -41,7 +41,7 @@ export default function StudentList() {
 
   const updateIntern = async (updatedData) => {
     try {
-      const response = await fetch(`/api/interns-data/${updatedData.id}`, {
+      const response = await fetch(`http://localhost:5000/api/interns-data/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData)
@@ -59,7 +59,7 @@ export default function StudentList() {
     if (!assignedProject) return;
   
     try {
-      const response = await fetch(`/api/interns-data`, {
+      const response = await fetch(`http://localhost:5000/api/save-intern/${interns.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: intern.id, assignedProject, progress: 0 }),
@@ -82,7 +82,7 @@ export default function StudentList() {
         body: JSON.stringify({ id, progress }),
       });
   
-      if (response.ok) {
+      if (response.ok) { 
         setInterns((prevInterns) =>
           prevInterns.map((intern) =>
             intern.id === id ? { ...intern, progress } : intern
