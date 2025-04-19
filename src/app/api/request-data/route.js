@@ -50,26 +50,30 @@ export async function GET() {
     await connectDB();
     const Intern = getInternModel();
     const interns = await Intern.find({ progress: 0 }).sort({ createdAt: -1 });
-    
+
     const internsData = interns.map((intern) => {
-      const resumeBuffer = intern.resume;
       let resumeUrl = "";
       try {
+        // Assuming intern.resume is a Buffer containing the raw PDF data
+        const resumeBuffer = intern.resume;
+        // Convert the Buffer to a base64-encoded string
         resumeUrl = resumeBuffer
           ? Buffer.from(resumeBuffer).toString("base64")
           : "";
-        resumeUrl = Buffer.from(resumeUrl, "base64").toString("utf8");
+        // Do NOT decode the base64 string to UTF-8; keep it as base64
       } catch (err) {
-        console.error("Error decoding resume for intern", intern._id, err);
+        console.error("Error processing resume for intern", intern._id, err);
+        resumeUrl = ""; // Fallback to an empty string if there's an error
       }
+
       return {
         ...intern.toObject(),
         id: intern._id.toString(),
-        resume: resumeUrl,
+        resume: resumeUrl, // This is now a base64-encoded string
         _id: undefined,
       };
     });
-    console.log("Enter", interns);
+    console.log("Enter", internsData);
 
     return NextResponse.json(internsData);
   } catch (error) {

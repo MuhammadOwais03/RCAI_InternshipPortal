@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ewe111vijay:01Bzd9eV1Y9A0GnK@cluster0.wc35e.mongodb.net/InternsPortal?retryWrites=true&w=majority';
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://owaisiqbal2021:EduTrack123@cluster0.3ehm2.mongodb.net/LInternshipPortal";
 
 // Schema definition
 const internSchema = new mongoose.Schema({
@@ -18,7 +20,8 @@ const internSchema = new mongoose.Schema({
   profilePic: Buffer,
   resume: Buffer,
   assignedProject: { type: String, default: "" },
-  progress: { type: Number, default: 0 }
+  progress: { type: Number, default: 0 },
+  seen: { type: Boolean, default: false },
 });
 
 // Database connection caching
@@ -37,14 +40,15 @@ async function connectDB() {
 // Model definition
 function getInternModel() {
   if (mongoose.models.Intern) return mongoose.models.Intern;
-  return mongoose.model('Intern', internSchema, 'internsList');
+  return mongoose.model('Intern', internSchema, 'interns');
 }
 
 export async function GET() {
   try {
     await connectDB();
     const Intern = getInternModel();
-    const interns = await Intern.find({});
+    const interns = await Intern.find({ progress: { $ne: 0 } });
+
     const internsData = interns.map(intern => ({
       ...intern.toObject(),
       id: intern._id.toString(),

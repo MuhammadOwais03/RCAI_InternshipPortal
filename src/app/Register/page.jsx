@@ -195,7 +195,7 @@ export default function InternshipPortal() {
             setFormData((prev) => ({ ...prev, resume: file }));
           }
         } catch (error) {
-          alert("Error parsing PDF");
+          // alert("Error parsing PDF");
         }
       }
     },
