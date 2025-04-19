@@ -4,8 +4,9 @@ import { IncomingForm } from 'formidable';
 import mongoose from 'mongoose';
 
 // MongoDB connection setup
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ewe111vijay:01Bzd9eV1Y9A0GnK@cluster0.wc35e.mongodb.net/InternsPortal?retryWrites=true&w=majority';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://owaisiqbal2021:EduTrack123@cluster0.3ehm2.mongodb.net/LInternshipPortal';
 
+console.log("Hello")
 // Define Intern Schema
 const internSchema = new mongoose.Schema({
   firstName: String,

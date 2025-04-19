@@ -1,8 +1,8 @@
 export default function Navbar() {
     return (
-      <nav className="bg-gray-800 p-4">
+      <nav className="bg-gray-800 p-4 w-full">
         <div className="container mx-auto flex justify-between items-center">
-          <a href="/admin/dashboard" className="text-white text-xl font-bold">
+          <a href="/admin/dashboard" className="text-white text-xl font-bold md:opacity-0 ml-8">
             Internship Portal
           </a>
           <div className="space-x-4">

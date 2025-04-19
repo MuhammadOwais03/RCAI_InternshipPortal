@@ -9,7 +9,8 @@ export default function SplashScreen() {
   useEffect(() => {
     // Redirect to the login screen after 3 seconds
     const timer = setTimeout(() => {
-      router.push("/Login"); // Redirect to the login page
+      
+      router.push("/Register"); // Redirect to the login page
     }, 3000);
 
     return () => clearTimeout(timer); // Cleanup the timer

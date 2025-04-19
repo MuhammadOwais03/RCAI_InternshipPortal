@@ -9,6 +9,8 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
+  console.log("Hello")
+
   const particlesConfig = {
     particles: {
       number: { value: 80, density: { enable: true, value_area: 800 } },
@@ -85,6 +87,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
+      <iframe
+      src="https://res.cloudinary.com/dmhu4xuvz/raw/upload/v1744990630/uwkspdrbf3ax0e7qkeed.pdf"
+      width="100%"
+      height="600px"
+      style={{ border: "1px solid #ccc" }}
+      title="PDF Preview"
+    />
       <div id="particles-js" className="absolute inset-0 pointer-events-none" />
       
       <div className="relative z-10 flex justify-center items-center min-h-screen">
