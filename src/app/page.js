@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function SplashScreen() {
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Redirect to the login screen after 3 seconds
+    console.log("Pathname:", pathname);
+    if (pathname === "/Admin") {
+      router.push("/Login"); // Redirect to the login page
+    }
+  }, [pathname, router]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
-      
-      router.push("/Register"); // Redirect to the login page
+      router.push("/Register"); // Redirect to the register page
     }, 3000);
 
-    return () => clearTimeout(timer); // Cleanup the timer
+    return () => clearTimeout(timer);
   }, [router]);
 
   return (

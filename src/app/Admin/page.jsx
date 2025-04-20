@@ -1,6 +1,20 @@
-import Navbar from "../components/navbar";
+"use client";
 
-export default function Dashboard() {
+import Navbar from "../components/navbar";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
+export default function Page() {
+
+  const router = useRouter();
+    const pathname = usePathname();
+  
+    useEffect(() => {
+      console.log("Pathname:", pathname);
+      if (pathname === "/Admin") {
+        router.push("/Login"); // Redirect to the login page
+      }
+    }, [pathname, router]);
+  
     return (
       <div className="min-h-screen bg-gray-100">
         <Navbar />

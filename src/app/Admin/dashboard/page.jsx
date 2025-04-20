@@ -9,6 +9,20 @@ const ApexCharts = dynamic(() => import("apexcharts"), { ssr: false });
 
 export default function Dashboard() {
   const [isMounted, setIsMounted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const adminAuth = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("admin_auth="));
+
+    if (!adminAuth) {
+      window.location.href = "/Login";
+      return
+    }
+    setIsAuthenticated(true);
+
+  }, []);
 
   useEffect(() => {
     setIsMounted(true);
@@ -58,6 +72,11 @@ export default function Dashboard() {
       if (chartElement) chartElement.innerHTML = "";
     };
   }, []);
+
+
+  if (!isMounted || !isAuthenticated) {
+    return null; // Render nothing until mounted and authenticated
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex">

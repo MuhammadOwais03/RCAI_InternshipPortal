@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+const ADMIN_NAME = "admin@gmail.com";
+const ADMIN_PASSWORD = "admin123";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -80,20 +83,22 @@ export default function Login() {
 
     if (Object.keys(errors).length === 0) {
       // Perform login logic here
+      // For example, check against hardcoded credentials
+      if (email !== ADMIN_NAME || password !== ADMIN_PASSWORD) {
+        alert("Invalid email or password");
+        return;
+      }
+
+      document.cookie = "admin_auth=true; path=/";
+
       alert("Login successful!");
-      router.push("/dashboard"); // Redirect to dashboard or another page
+      router.push("Admin/dashboard"); // Redirect to dashboard or another page
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-      <iframe
-      src="https://res.cloudinary.com/dmhu4xuvz/raw/upload/v1744990630/uwkspdrbf3ax0e7qkeed.pdf"
-      width="100%"
-      height="600px"
-      style={{ border: "1px solid #ccc" }}
-      title="PDF Preview"
-    />
+     
       <div id="particles-js" className="absolute inset-0 pointer-events-none" />
       
       <div className="relative z-10 flex justify-center items-center min-h-screen">
@@ -131,7 +136,7 @@ export default function Login() {
               Login
             </button>
 
-            <p className="text-center text-sm text-gray-400">
+            {/* <p className="text-center text-sm text-gray-400">
               Don't have an account?{" "}
               <button
                 type="button"
@@ -140,7 +145,7 @@ export default function Login() {
               >
                 Create one
               </button>
-            </p>
+            </p> */}
           </form>
         </div>
       </div>
