@@ -7,6 +7,7 @@ import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 
 
+
 export default function InternshipPortal() {
   const [step, setStep] = useState(1);
   const [resumeText, setResumeText] = useState("");
@@ -212,8 +213,11 @@ export default function InternshipPortal() {
     let errors = {};
     if (step === 1) {
       if (!formData.firstName) errors.firstName = "First Name is required";
-      if (!formData.email.match(/^[\w-]+@[\w-]+\.[\w-]+$/))
+      // if (!formData.email.match(/^[\w-]+@[\w-]+\.[\w-]+$/))
+      //   errors.email = "Invalid email";
+      if (!formData.email.match(/^[\w.-]+@[\w.-]+\.\w{2,}$/))
         errors.email = "Invalid email";
+      
       if (!formData.phone.match(/^\d{11}$/))
         errors.phone = "Invalid phone number";
     }
@@ -607,5 +611,7 @@ export default function InternshipPortal() {
         </div>
       </div>
     </div>
+
+   
   );
 }

@@ -92,7 +92,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                href="/certification"
+                href="/Admin/certification"
                 className="flex items-center space-x-2 py-2 px-4 rounded hover:bg-gray-700 transition duration-200 text-sm lg:text-base"
                 onClick={() => setIsOpen(false)}
               >
